@@ -217,7 +217,7 @@
 
     call denite#custom#filter('matcher_ignore_globs', 'ignore_globs',
           \ [ '.git/', '.ropeproject/', '__pycache__/',
-          \ '*cache*', '*vendor*', '*.vagrant*',
+          \ '*cache*', '*vendor*', '*.vagrant*', '*.tmp*',
           \   'venv/', 'images/', '*.min.*', 'img/', 'fonts/'])
     let g:denite_source_history_yank_enable=1
     nnoremap <leader>y :Denite history/yank<CR>
