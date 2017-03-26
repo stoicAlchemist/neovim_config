@@ -150,53 +150,43 @@
 " }}}
 
 " Plugins {{{
-  set runtimepath+=$HOME/.config/nvim/plugins/repos/github.com/Shougo/dein.vim
+    call plug#begin('~/.config/nvim/plugins')
 
-  if dein#load_state(expand('~/.config/nvim/plugins'))
-    call dein#begin(expand('~/.config/nvim/plugins'))
+    Plug 'Shougo/denite.nvim'
+    Plug 'Shougo/neosnippet'
+    Plug 'Shougo/neosnippet-snippets'
 
-    call dein#add('Shougo/dein.vim')
-    call dein#add('Shougo/denite.nvim')
-    call dein#add('Shougo/deoplete.nvim')
-    call dein#add('Shougo/neosnippet')
-    call dein#add('Shougo/neosnippet-snippets')
+    Plug 'tpope/vim-fugitive'
+    Plug 'tpope/vim-repeat' " To repeat things that plugins do
+    Plug 'tpope/vim-surround'
+    Plug 'tpope/vim-eunuch'
+    Plug 'tpope/vim-endwise'
+    Plug 'tpope/vim-rvm'
+    Plug 'tpope/vim-commentary' " Comment text objects
+    Plug 'tpope/vim-jdaddy' " Json manupulation
 
-    call dein#add('tpope/vim-fugitive')
-    call dein#add('tpope/vim-repeat') " To repeat things that plugins do
-    call dein#add('tpope/vim-surround')
-    call dein#add('tpope/vim-eunuch')
-    call dein#add('tpope/vim-endwise')
-    call dein#add('tpope/vim-rvm')
-
-    call dein#add('tomasr/molokai')
-    call dein#add('junegunn/vim-easy-align')
-    call dein#add('sjl/gundo.vim')
-    call dein#add('Yggdroot/indentLine')
-    call dein#add('rstacruz/sparkup') " Snnippet
-    call dein#add('geoffharcourt/vim-matchit') " Match closing whatever with %
-    call dein#add('vim-scripts/ruby-matchit')
-    call dein#add('vim-scripts/autoclose')
-    call dein#add('mileszs/ack.vim')
-    call dein#add('sheerun/vim-polyglot') " Most programming languages support
-    call dein#add('mtth/scratch.vim') " Scratch buffer
-    call dein#add('scrooloose/nerdcommenter')
-    call dein#add('scrooloose/nerdtree')
-    call dein#add('Xuyuanp/nerdtree-git-plugin') " See git changes in NERDTree
-    call dein#add('tiagofumo/vim-nerdtree-syntax-highlight') " NERDTRee filetype icons
-    call dein#add('ryanoasis/vim-devicons') " Icons required by ^
-    call dein#add('Rykka/riv.vim') " To read srt files
-    call dein#add('andreshazard/vim-logreview') " Log reviewer
-    call dein#add('vim-airline/vim-airline') " Powerline for vim
-    call dein#add('vim-airline/vim-airline-themes')
-    call dein#end()
-    call dein#save_state()
-  endif
+    Plug 'tomasr/molokai'
+    Plug 'junegunn/vim-easy-align'
+    Plug 'sjl/gundo.vim'
+    Plug 'Yggdroot/indentLine'
+    Plug 'rstacruz/sparkup' " Snnippet
+    Plug 'geoffharcourt/vim-matchit' " Match closing whatever with %
+    Plug 'vim-scripts/ruby-matchit'
+    Plug 'vim-scripts/autoclose'
+    Plug 'mileszs/ack.vim'
+    Plug 'sheerun/vim-polyglot' " Most programming languages support
+    Plug 'mtth/scratch.vim' " Scratch buffer
+    Plug 'scrooloose/nerdtree'
+    Plug 'Xuyuanp/nerdtree-git-plugin' " See git changes in NERDTree
+    Plug 'tiagofumo/vim-nerdtree-syntax-highlight' " NERDTRee filetype icons
+    Plug 'ryanoasis/vim-devicons' " Icons required by ^
+    Plug 'andreshazard/vim-logreview' " Log reviewer
+    Plug 'vim-airline/vim-airline' " Powerline for vim
+    Plug 'vim-airline/vim-airline-themes'
+    call plug#end()
 
   filetype plugin indent on
 
-  if dein#check_install()
-    call dein#install()
-  endif
 " }}}
 
 " Plugin Configs {{{
@@ -266,12 +256,6 @@
     let g:indent_guides_start_level=2
     let g:indent_guides_guide_size=1
     let g:indentLine_char='│'
-  " }}}
-  " Deoplete Configurations {{{
-    let g:acp_enableAtStartup=0
-    let g:deoplete#enable_at_startup=1
-    let g:deoplete#enable_smart_case=1
-    let g:deoplete#sources#syntax#min_keyword_length=3
   " }}}
   " Nerdtree Config {{{
     nnoremap <leader>t :NERDTreeToggle<CR>
