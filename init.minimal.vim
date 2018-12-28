@@ -194,18 +194,10 @@
   Plug 'tpope/vim-commentary'
   Plug 'tpope/vim-jdaddy', {'for': 'json'}
   Plug 'tpope/vim-sleuth'   " Switch indent depending on ft
-  " Ruby {{{
-    Plug 'tpope/vim-rvm'
-    Plug 'vim-ruby/vim-ruby', {'for': 'ruby'} " Ruby text Objects, motions and indents
-    Plug 'vim-scripts/ruby-matchit', {'for': 'ruby'}  " Match the end word to close block
-  " }}}
+  Plug 'tpope/vim-rvm'
+  Plug 'vim-ruby/vim-ruby', {'for': 'ruby'} " Ruby text Objects, motions and indents
+  Plug 'vim-scripts/ruby-matchit', {'for': 'ruby'}  " Match the end word to close block
   Plug 'andymass/vim-matchup' " Use % to match unsopported languages like ruby
-  " Elixir {{{
-    Plug 'elixir-editors/vim-elixir', {'for': 'elixir.nvim'}
-    Plug 'thinca/vim-ref', {'for': 'elixir.nvim'}
-    Plug 'awetzel/elixir.nvim', {'do': 'yes \| ./install.sh', 'for': 'elixir'}
-  " }}}
-
   Plug 'andreshazard/vim-logreview' " Log reviewer
   Plug 'junegunn/fzf', {'dir': '~/.fzf', 'do': './install --all'}
   Plug 'junegunn/fzf.vim'
@@ -218,23 +210,18 @@
   Plug 'mileszs/ack.vim' " Add command to use Ack instead of Grep
   Plug 'sheerun/vim-polyglot' " Most programming languages support
   Plug 'Yggdroot/indentLine'  " Show indentation line to guide
-  " NERDTree {{{
-    Plug 'scrooloose/nerdtree', {'on':  'NERDTreeToggle'}
-    Plug 'Xuyuanp/nerdtree-git-plugin', {'on':  'NERDTreeToggle'}
-    Plug 'tiagofumo/vim-nerdtree-syntax-highlight', {'on':  'NERDTreeToggle'}
-    Plug 'ryanoasis/vim-devicons', {'on':  'NERDTreeToggle'}
-  " }}}
-  Plug 'w0rp/ale' " Syntax and linter checkers
-  Plug 'Shougo/deoplete.nvim', { 'do': ':UpdateRemotePlugins' }
-
+  " NERDTree
+  Plug 'scrooloose/nerdtree', {'on':  'NERDTreeToggle'}
+  Plug 'Xuyuanp/nerdtree-git-plugin', {'on':  'NERDTreeToggle'}
+  Plug 'tiagofumo/vim-nerdtree-syntax-highlight', {'on':  'NERDTreeToggle'}
+  Plug 'ryanoasis/vim-devicons', {'on':  'NERDTreeToggle'}
 
   if !exists('gui_oni')
-  " Colorschemes {{{
+    Plug 'tomasr/molokai'
     Plug 'morhetz/gruvbox' " Colorscheme
+    Plug 'altercation/vim-colors-solarized' " Colorscheme
     Plug 'vim-airline/vim-airline' " Powerline for vim
     Plug 'vim-airline/vim-airline-themes'
-    Plug 'ayu-theme/ayu-vim' " Nice dark Color
-  " }}}
   endif
 
   call plug#end()
@@ -249,11 +236,11 @@
   " Autocomplete options {{{
     set complete=.,w,b,u,t
     set completeopt=longest,menuone,preview
+    " Ignore directories and files
     set wildignore+=*.DS_Store
     set wildignore+=*/_build**
     set wildignore+=*/.ssh
     set wildignore+=*cache/**
-    let g:deoplete#enable_at_startup = 1
   " }}}
   if !exists('gui_oni')
     " Colorscheme {{{
@@ -261,12 +248,8 @@
       set t_Co=256
       set t_AB=^[[48;5;%dm
       set t_AF=^[[38;5;%dm
-      " Because it's solarized, it needs this:
-      set t_Co=256
+      colorscheme gruvbox
       set background=dark
-      " Needs base16 on iterm: https://github.com/chriskempson/base16-iterm2
-      let ayucolor="mirage"
-      colorscheme ayu
 
       hi clear SpellBad
       hi SpellBad cterm=underline
@@ -280,6 +263,9 @@
   " Nerdtree Config {{{
     nnoremap <leader>t :NERDTreeToggle<CR>
     autocmd FileType nerdtree setlocal nolist
+  "}}}"
+
+  " Nerdtree git Config {{{
     let g:NERDTreeIndicatorMapCustom = {
           \ "Modified"  : "✹",
           \ "Staged"    : "✚",
@@ -291,8 +277,7 @@
           \ "Clean"     : "✔︎",
           \ "Unknown"   : "?"
           \ }
-  "}}}"
-
+  " }}}
   if !exists('gui_oni')
   " Airline {{{
     if !exists('g:airline_symbols')
@@ -313,34 +298,9 @@
     nmap <leader>b :Buffers<CR>
   "}}}
   if has("unix")
-  " Ctags {{{
     let s:uname = system("uname -s")
     if match(s:uname, "arwin") && !exists("Ctags")
-      command! Ctags execute  "!`brew --prefix`/bin/ctags -R --exclude=@.ctagsignore ."
+      command! Ctags execute  "!`brew --prefix`/bin/ctags -R ."
     endif
-  " }}}
   endif
-
-  " Elixir {{{
-    let g:elixir_maxmenu     = 5
-    let g:elixir_docpreview  = 1
-    let g:elixir_showerror   = 1
-    let g:elixir_autobuild   = 0
-    let g:elixir_comp_minlen = 2
-    let g:elixir_maxpreviews = 5
-  " }}}
-
-  " Ack configs {{{
-    let g:ackprg = 'ag --vimgrep --smart-case'
-  " }}}
-
 " }}}"
-
-" Project Configurations {{{
-  " Angular 2 {{{
-    if filereadable('angular.json')
-      " For the use with angular custom tags
-      let g:ale_html_tidy_options='--custom-tags blocklevel'
-    endif
-  " }}}
-" }}}
