@@ -224,16 +224,24 @@
     Plug 'tiagofumo/vim-nerdtree-syntax-highlight', {'on':  'NERDTreeToggle'}
     Plug 'ryanoasis/vim-devicons', {'on':  'NERDTreeToggle'}
   " }}}
-  Plug 'w0rp/ale' " Syntax and linter checkers
   Plug 'Shougo/deoplete.nvim', { 'do': ':UpdateRemotePlugins' }
+  Plug 'majutsushi/tagbar' " Generate a tag panel to check structure
+
+  " Syntax highlight {{{
+    Plug 'w0rp/ale' " Syntax and linter checkers
+    Plug 'othree/yajs.vim' " Better Syntax highlight for JavaScript
+    Plug 'othree/html5.vim' " Better Syntax for Oceanic Theme
+    Plug 'HerringtonDarkholme/yats.vim' " Better Syntax highlight for TypeScript
+  " }}}
 
 
   if !exists('gui_oni')
   " Colorschemes {{{
-    Plug 'morhetz/gruvbox' " Colorscheme
     Plug 'vim-airline/vim-airline' " Powerline for vim
     Plug 'vim-airline/vim-airline-themes'
+    Plug 'morhetz/gruvbox' " Colorscheme
     Plug 'ayu-theme/ayu-vim' " Nice dark Color
+    Plug 'mhartington/oceanic-next' " Nice Oceanic Color
   " }}}
   endif
 
@@ -261,12 +269,12 @@
       set t_Co=256
       set t_AB=^[[48;5;%dm
       set t_AF=^[[38;5;%dm
-      " Because it's solarized, it needs this:
-      set t_Co=256
-      set background=dark
       " Needs base16 on iterm: https://github.com/chriskempson/base16-iterm2
-      let ayucolor="mirage"
-      colorscheme ayu
+      "let ayucolor="mirage"
+      "colorscheme ayu
+      "colorscheme OceanicNext
+      colorscheme gruvbox
+      set background=dark
 
       hi clear SpellBad
       hi SpellBad cterm=underline
@@ -299,13 +307,16 @@
       let g:airline_symbols = {}
       let g:airline_powerline_fonts = 1
     endif
-    let g:airline_left_sep          = '⮀'
-    let g:airline_left_alt_sep      = '⮁'
-    let g:airline_right_sep         = '⮂'
-    let g:airline_right_alt_sep     = '⮃'
-    let g:airline_symbols.branch    = '⭠'
-    let g:airline_symbols.readonly  = '⭤'
-    let g:airline_symbols.linenr    = '⭡'
+    let g:airline_left_sep         = '⮀'
+    let g:airline_left_alt_sep     = '⮁'
+    let g:airline_right_sep        = '⮂'
+    let g:airline_right_alt_sep    = '⮃'
+    let g:airline_symbols.branch   = '⭠'
+    let g:airline_symbols.readonly = '⭤'
+    let g:airline_symbols.linenr   = '⭡'
+    let g:airline_detect_spell     = 0 " Don't display spell
+    let g:airline#extensions#hunks#enabled = 0 " Don't display the hunks info
+    "let g:airline_theme='oceanicnext' " Only use if Oceanic colorscheme is used
   " }}}
   endif
   " FZF {{{
@@ -316,7 +327,8 @@
   " Ctags {{{
     let s:uname = system("uname -s")
     if match(s:uname, "arwin") && !exists("Ctags")
-      command! Ctags execute  "!`brew --prefix`/bin/ctags -R --exclude=@.ctagsignore ."
+      " Exhuberant Ctags must be installed using brew
+      command! Ctags execute  "!`brew --prefix`/bin/ctags -R --exclude=@/Users/brianmartinez/.ctagsignore ."
     endif
   " }}}
   endif
@@ -334,6 +346,22 @@
     let g:ackprg = 'ag --vimgrep --smart-case'
   " }}}
 
+  " Tagbar {{{
+    nmap <leader>g :TagbarToggle<CR>
+    let g:tagbar_type_typescript = {
+          \ 'ctagstype': 'typescript',
+          \ 'kinds': [
+          \ 'c:classes',
+          \ 'n:modules',
+          \ 'f:functions',
+          \ 'v:variables',
+          \ 'v:varlambdas',
+          \ 'm:members',
+          \ 'i:interfaces',
+          \ 'e:enums',
+          \ ]
+          \ }
+  " }}}
 " }}}"
 
 " Project Configurations {{{
