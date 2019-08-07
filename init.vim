@@ -88,11 +88,6 @@
   set hlsearch
   set ignorecase
   set smartcase
-  if !exists('gui_oni')
-    set guifont=Droid\ Sans\ Mono\ for\ Powerline\ Plus\ Nerd\ File\ Types:h11
-    "set guifont=Anonymice\ Nerd\ Font\ Complete\ Mono:h12
-    "set guifont=Dejavu\ Sans\ Mono\ for\ Powerline\ Nerd\ Font\ Complete:h12
-  endif
   set ruler " Line and column number of the cursor position
   set guioptions+=aceLlRrb " Need to add LlRrb to remove it
   " a: Selection is available to be pasted on the system and is yanked to "* reg
@@ -104,8 +99,10 @@
   set sidescrolloff=6
   set foldlevelstart=0
   set textwidth=80
-  if !exists('gui_oni')
-    let $NVIM_TUI_ENABLE_CURSOR_SHAPE=1 " Set the cursor as a pipe when in insert mode
+  if exists('veonim')
+    set guifont=DejaVuSansMono\ Nerd\ Font:h16
+  endif
+  if !exists('veonim')
     let $NVIM_TUI_ENABLE_TRUE_COLOR=1 " This is ignored if termguicolors is used
 
     set showmatch   " Show matching parens when closing
@@ -199,7 +196,7 @@
     Plug 'vim-ruby/vim-ruby', {'for': 'ruby'} " Ruby text Objects, motions and indents
     Plug 'vim-scripts/ruby-matchit', {'for': 'ruby'}  " Match the end word to close block
   " }}}
-  Plug 'andymass/vim-matchup' " Use % to match unsopported languages like ruby
+  Plug 'andymass/vim-matchup' " Use % to match closing pair
   " Elixir {{{
     Plug 'elixir-editors/vim-elixir', {'for': 'elixir.nvim'}
     Plug 'thinca/vim-ref', {'for': 'elixir.nvim'}
@@ -211,39 +208,41 @@
   Plug 'junegunn/fzf.vim'
   Plug 'junegunn/vim-easy-align'
   Plug 'mhinz/vim-signify' " Show signs gutter with VCS info
-  if !exists('gui_oni')
-    Plug 'Raimondi/delimitMate' " Auto-close matching parens
-  endif
+  Plug 'Raimondi/delimitMate' " Auto-close matching parens
+  Plug 'Yggdroot/indentLine'  " Show indentation line to guide
   Plug 'vim-scripts/AnsiEsc.vim' " Color ANSI escape chars
   Plug 'mileszs/ack.vim' " Add command to use Ack instead of Grep
   Plug 'sheerun/vim-polyglot' " Most programming languages support
-  Plug 'Yggdroot/indentLine'  " Show indentation line to guide
-  " NERDTree {{{
-    Plug 'scrooloose/nerdtree', {'on':  'NERDTreeToggle'}
-    Plug 'Xuyuanp/nerdtree-git-plugin', {'on':  'NERDTreeToggle'}
-    Plug 'tiagofumo/vim-nerdtree-syntax-highlight', {'on':  'NERDTreeToggle'}
-    Plug 'ryanoasis/vim-devicons', {'on':  'NERDTreeToggle'}
-  " }}}
-  Plug 'Shougo/deoplete.nvim', { 'do': ':UpdateRemotePlugins' }
+  Plug 'neoclide/coc.nvim', {'branch': 'release'}
   Plug 'majutsushi/tagbar' " Generate a tag panel to check structure
+  Plug 'sff1019/vim-joker' " Colorscheme
 
   " Syntax highlight {{{
-    Plug 'w0rp/ale' " Syntax and linter checkers
     Plug 'othree/yajs.vim' " Better Syntax highlight for JavaScript
     Plug 'othree/html5.vim' " Better Syntax for Oceanic Theme
     Plug 'HerringtonDarkholme/yats.vim' " Better Syntax highlight for TypeScript
   " }}}
 
+" Colorschemes {{{
+  Plug 'vim-airline/vim-airline' " Powerline for vim
+  Plug 'vim-airline/vim-airline-themes'
+  Plug 'morhetz/gruvbox' " Colorscheme
+  Plug 'ayu-theme/ayu-vim' " Nice dark Color
+  Plug 'mhartington/oceanic-next' " Nice Oceanic Color
+  Plug 'joshdick/onedark.vim' " Inspired on Atom's colorscheme
+  Plug 'altercation/vim-colors-solarized' " This needs some config and linking
+" }}}
 
-  if !exists('gui_oni')
-  " Colorschemes {{{
-    Plug 'vim-airline/vim-airline' " Powerline for vim
-    Plug 'vim-airline/vim-airline-themes'
-    Plug 'morhetz/gruvbox' " Colorscheme
-    Plug 'ayu-theme/ayu-vim' " Nice dark Color
-    Plug 'mhartington/oceanic-next' " Nice Oceanic Color
+  " NERDTree {{{
+    Plug 'scrooloose/nerdtree', {'on':  'NERDTreeToggle'}
+    Plug 'Xuyuanp/nerdtree-git-plugin', {'on':  'NERDTreeToggle'}
+    Plug 'stoicAlchemist/vim-nerdtree-syntax-highlight', {'on':  'NERDTreeToggle'}
+    " WARNING: This should be the last plugin loaded
+    Plug 'ryanoasis/vim-devicons', {'on':  'NERDTreeToggle'}
   " }}}
-  endif
+
+  " Documentation
+  Plug 'rizzatti/dash.vim'
 
   call plug#end()
   filetype plugin indent on
@@ -261,9 +260,9 @@
     set wildignore+=*/_build**
     set wildignore+=*/.ssh
     set wildignore+=*cache/**
-    let g:deoplete#enable_at_startup = 1
+    " let g:deoplete#enable_at_startup = 1
   " }}}
-  if !exists('gui_oni')
+  if !exists('veonim')
     " Colorscheme {{{
       set termguicolors
       set t_Co=256
@@ -273,35 +272,62 @@
       "let ayucolor="mirage"
       "colorscheme ayu
       "colorscheme OceanicNext
-      colorscheme gruvbox
+      if !exists('veonim')
+        colorscheme onedark
+      endif
       set background=dark
 
       hi clear SpellBad
       hi SpellBad cterm=underline
     " }}}
   endif
+
   " IndentLine {{{
     let g:indent_guides_start_level=2
     let g:indent_guides_guide_size=1
     let g:indentLine_char=''
   " }}}
+
   " Nerdtree Config {{{
     nnoremap <leader>t :NERDTreeToggle<CR>
     autocmd FileType nerdtree setlocal nolist
-    let g:NERDTreeIndicatorMapCustom = {
-          \ "Modified"  : "✹",
-          \ "Staged"    : "✚",
-          \ "Untracked" : "✭",
-          \ "Renamed"   : "➜",
-          \ "Unmerged"  : "═",
-          \ "Deleted"   : "✖",
-          \ "Dirty"     : "✗",
-          \ "Clean"     : "✔︎",
-          \ "Unknown"   : "?"
-          \ }
+    let g:NERDTreeWinSize = 50
+    let g:NERDTreeQuitOnOpen = 1
+
+    " Disable arrow icons at the left side of folders for NERDTree.
+    let g:WebDevIconsUnicodeDecorateFolderNodes = v:true
+    let g:WebDevIconsNerdTreeBeforeGlyphPadding = ' '
+    let g:WebDevIconsNerdTreeAfterGlyphPadding = ' '
+    highlight! link NERDTreeFlags NERDTreeDir
+    autocmd FileType nerdtree setlocal signcolumn=no
+    let g:WebDevIconsNerdTreeGitPluginForceVAlign = 1
+    let g:WebDevIconsUnicodeDecorateFileNodesPatternSymbols = {} " needed
+    let g:WebDevIconsUnicodeDecorateFileNodesPatternSymbols['.spec\.ts$'] = ''
+    let g:WebDevIconsUnicodeDecorateFileNodesPatternSymbols['^package.json$'] = ''
+    let g:WebDevIconsUnicodeDecorateFileNodesPatternSymbols['lock'] = ''
+    let g:WebDevIconsUnicodeDecorateFileNodesPatternSymbols['^Jenkinsfile$'] = ''
+    let g:WebDevIconsUnicodeDecorateFileNodesPatternSymbols['^Gemfile$'] = ''
+    let g:WebDevIconsUnicodeDecorateFileNodesPatternSymbols['.*\.ru$'] = ''
+    let g:WebDevIconsUnicodeDecorateFileNodesPatternSymbols['^Rakefile$'] = ''
+    let g:WebDevIconsUnicodeDecorateFileNodesPatternSymbols['^README\.'] = ''
+
+    let g:WebDevIconsUnicodeDecorateFileNodesExtensionSymbols = {} " needed
+    let g:WebDevIconsUnicodeDecorateFileNodesExtensionSymbols['css'] = ''
+    let g:WebDevIconsUnicodeDecorateFileNodesExtensionSymbols['properties'] = ''
+    let g:WebDevIconsUnicodeDecorateFileNodesExtensionSymbols['tgz'] = ''
+    let g:WebDevIconsUnicodeDecorateFileNodesExtensionSymbols['erb'] = ''
+    let g:WebDevIconsUnicodeDecorateFileNodesExtensionSymbols['jbuilder'] = ''
+    let g:WebDevIconsUnicodeDecorateFileNodesExtensionSymbols['txt'] = ''
+    let g:WebDevIconsUnicodeDecorateFileNodesExtensionSymbols['ex'] = ''
+    let g:WebDevIconsUnicodeDecorateFileNodesExtensionSymbols['exs'] = ''
+
+    " To fix spacing problems in NERDTree
+    if exists("g:loaded_webdevicons")
+      call webdevicons#refresh()
+    endif
   "}}}"
 
-  if !exists('gui_oni')
+  if !exists('veonim')
   " Airline {{{
     if !exists('g:airline_symbols')
       let g:airline_symbols = {}
@@ -316,12 +342,17 @@
     let g:airline_symbols.linenr   = '⭡'
     let g:airline_detect_spell     = 0 " Don't display spell
     let g:airline#extensions#hunks#enabled = 0 " Don't display the hunks info
-    "let g:airline_theme='oceanicnext' " Only use if Oceanic colorscheme is used
+    let g:airline_theme='lucius' " I like this theme better
   " }}}
   endif
   " FZF {{{
-    nmap <leader>f :Files<CR>
-    nmap <leader>b :Buffers<CR>
+    if !exists('veonim')
+      nmap <leader>f :Files<CR>
+      nmap <leader>b :Buffers<CR>
+    else
+      nmap <leader>f :Veonim files<CR>
+      nmap <leader>b :Veonim buffers<CR>
+    endif
   "}}}
   if has("unix")
   " Ctags {{{
@@ -343,7 +374,9 @@
   " }}}
 
   " Ack configs {{{
-    let g:ackprg = 'ag --vimgrep --smart-case'
+    if !exists('veonim')
+      let g:ackprg = 'rg --vimgrep --smart-case'
+    endif
   " }}}
 
   " Tagbar {{{
@@ -362,11 +395,15 @@
           \ ]
           \ }
   " }}}
+
+  " Coc {{{
+    command! -nargs=0 Prettier :call CocAction('runCommand', 'prettier.formatFile')
+  " }}}
 " }}}"
 
 " Project Configurations {{{
   " Angular 2 {{{
-    if filereadable('angular.json')
+    if filereadable('ng-package.json')
       " For the use with angular custom tags
       let g:ale_html_tidy_options='--custom-tags blocklevel'
     endif
