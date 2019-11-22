@@ -1,0 +1,12 @@
+[submodule "plugged/fzf-mru.vim"]
+	path = plugged/fzf-mru.vim
+	url = https://github.com/pbogut/fzf-mru.vim.git
+[submodule "plugged/nerdtree-devicons-syntax"]
+	path = plugged/nerdtree-devicons-syntax
+	url = https://github.com/vwxyutarooo/nerdtree-devicons-syntax.git
+[submodule "plugged/vim-go"]
+	path = plugged/vim-go
+	url = https://github.com/fatih/vim-go.git
+[submodule "plugged/vim-terraform"]
+	path = plugged/vim-terraform
+	url = https://github.com/hashivim/vim-terraform.git

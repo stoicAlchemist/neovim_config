@@ -118,6 +118,8 @@
       let &t_SI = "\<Esc>]50;CursorShape=1\x7"
       let &t_EI = "\<Esc>]50;CursorShape=0\x7"
     endif
+    let &t_8f="\<Esc>[38;2;%lu;%lu;%lum"
+    let &t_8b="\<Esc>[38;2;%lu;%lu;%lum"
   endif
 
   "
@@ -203,9 +205,17 @@
     Plug 'awetzel/elixir.nvim', {'do': 'yes \| ./install.sh', 'for': 'elixir'}
   " }}}
 
+  " Go Language {{{
+    Plug 'fatih/vim-go'
+    au FileType go set noexpandtab
+    au FileType go set shiftwidth=4
+    au FileType go set softtabstop=4
+    au FileType go set tabstop=4
+  " }}}
   Plug 'andreshazard/vim-logreview' " Log reviewer
   Plug 'junegunn/fzf', {'dir': '~/.fzf', 'do': './install --all'}
   Plug 'junegunn/fzf.vim'
+  Plug 'pbogut/fzf-mru.vim'
   Plug 'junegunn/vim-easy-align'
   Plug 'mhinz/vim-signify' " Show signs gutter with VCS info
   Plug 'Raimondi/delimitMate' " Auto-close matching parens
@@ -216,9 +226,11 @@
   Plug 'neoclide/coc.nvim', {'branch': 'release'}
   Plug 'majutsushi/tagbar' " Generate a tag panel to check structure
   Plug 'sff1019/vim-joker' " Colorscheme
+  Plug 'hashivim/vim-terraform' " Terraform syntax and command
 
   " Syntax highlight {{{
     Plug 'othree/yajs.vim' " Better Syntax highlight for JavaScript
+    au FileType jproperties set synmaxcol=500
     Plug 'othree/html5.vim' " Better Syntax for Oceanic Theme
     Plug 'HerringtonDarkholme/yats.vim' " Better Syntax highlight for TypeScript
   " }}}
@@ -233,16 +245,18 @@
   Plug 'altercation/vim-colors-solarized' " This needs some config and linking
 " }}}
 
+  " Documentation {{{
+    Plug 'rizzatti/dash.vim'
+  " }}}
+
   " NERDTree {{{
     Plug 'scrooloose/nerdtree', {'on':  'NERDTreeToggle'}
     Plug 'Xuyuanp/nerdtree-git-plugin', {'on':  'NERDTreeToggle'}
-    Plug 'stoicAlchemist/vim-nerdtree-syntax-highlight', {'on':  'NERDTreeToggle'}
+    Plug 'vwxyutarooo/nerdtree-devicons-syntax'
+    "Plug 'stoicAlchemist/vim-nerdtree-syntax-highlight', {'on':  'NERDTreeToggle'}
     " WARNING: This should be the last plugin loaded
     Plug 'ryanoasis/vim-devicons', {'on':  'NERDTreeToggle'}
   " }}}
-
-  " Documentation
-  Plug 'rizzatti/dash.vim'
 
   call plug#end()
   filetype plugin indent on
@@ -273,6 +287,7 @@
       "colorscheme ayu
       "colorscheme OceanicNext
       if !exists('veonim')
+        let g:gruvbox_italic=1
         colorscheme onedark
       endif
       set background=dark
@@ -318,8 +333,6 @@
     let g:WebDevIconsUnicodeDecorateFileNodesExtensionSymbols['erb'] = ''
     let g:WebDevIconsUnicodeDecorateFileNodesExtensionSymbols['jbuilder'] = ''
     let g:WebDevIconsUnicodeDecorateFileNodesExtensionSymbols['txt'] = ''
-    let g:WebDevIconsUnicodeDecorateFileNodesExtensionSymbols['ex'] = ''
-    let g:WebDevIconsUnicodeDecorateFileNodesExtensionSymbols['exs'] = ''
 
     " To fix spacing problems in NERDTree
     if exists("g:loaded_webdevicons")
@@ -333,13 +346,13 @@
       let g:airline_symbols = {}
       let g:airline_powerline_fonts = 1
     endif
-    let g:airline_left_sep         = '⮀'
-    let g:airline_left_alt_sep     = '⮁'
-    let g:airline_right_sep        = '⮂'
-    let g:airline_right_alt_sep    = '⮃'
-    let g:airline_symbols.branch   = '⭠'
-    let g:airline_symbols.readonly = '⭤'
-    let g:airline_symbols.linenr   = '⭡'
+    " let g:airline_left_sep         = '⮀'
+    " let g:airline_left_alt_sep     = '⮁'
+    " let g:airline_right_sep        = '⮂'
+    " let g:airline_right_alt_sep    = '⮃'
+    " let g:airline_symbols.branch   = '⭠'
+    " let g:airline_symbols.readonly = '⭤'
+    " let g:airline_symbols.linenr   = '⭡'
     let g:airline_detect_spell     = 0 " Don't display spell
     let g:airline#extensions#hunks#enabled = 0 " Don't display the hunks info
     let g:airline_theme='lucius' " I like this theme better
