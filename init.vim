@@ -3,48 +3,61 @@
 " Description: Configuration file for nvim
 " Contact: xangelux at gmail dot com
 
+" Telling VIM that the following lines are to be converted to 'utf-8' encoding.
+" This is used for when strings should be interpreted as weird encoding. With
+" empty arguments, it resets to 'do not convert'
+scriptencoding 'utf-8'
+
+if !exists('g:vscode')
 " Prelude {{{
-  scriptencoding 'utf-8'
+  " When this init.vim file is saved, reload configs. This might cause colors
+  " glitches or issues with plugins like Airbrake.
   autocmd! bufwritepost init.vim source %
-  autocmd FocusLost * :silent! wall
   autocmd VimResized * :wincmd =
+  " Content encoding for the opened buffer
   set fileencoding=utf-8
+  " Content encoding for the opened terminal
   set termencoding=utf-8
+  " Spell languages in order of use
   set spell spelllang=es_mx,en
+  " It's easier to hit kj to Escape
   imap kj <ESC>
   imap Kj <ESC>
   imap KJ <ESC>
+  " Custom mapping to delete all trailing spaces
   nnoremap <leader>W mz:let @x=@/<CR>:%s/\s\+$//<CR>:let @/=@x<CR>`z
+  " As highlight search is set, this will turn highlight off with a mapping
   nnoremap <leader><Space> :noh<CR>
+  " Fat/dumb fingers, none have original functionality
   command! W w
   command! Q q
   cmap wq w
   command! Qa qa
   command! QA qa
+  " Patch mode is used to generate .orig files, this files are saved in backup directory
   set backupdir=$HOME/.config/nvim/temp/backup/
-  set directory=$HOME/.config/nvim/temp/swap/
+  " Mkview is used to 'save' a view of the current window and it's saved here
   set viewdir=$HOME/.config/nvim/temp/view/
+  " Undo files are created to have 'infinite' undo
   set undodir=$HOME/.config/nvim/temp/undo/
+  " Turn on backup, turn off swap files and turn on 'infinite undo'
   set backup
   set noswapfile
   set undofile
 
   " VIMINFO to save {{{
 
-    " This option should be after nocompatible
+    " This option should be after nocompatible (default nocompatible in NVIM)
     " '50       -> Save 50 marks
     " n$HOME... -> Where the viminfo file will be saved
     set viminfo='50,<800,/50,h,n$HOME/.config/nvim/temp/viminfo " This line can cause errors in nvim
 
   "}}}
 
-  " Directory check {{{
+  " Directories check {{{
 
     if !isdirectory(expand(&backupdir))
       call mkdir(expand(&backupdir), "p")
-    endif
-    if !isdirectory(expand(&directory))
-      call mkdir(expand(&directory), "p")
     endif
     if !isdirectory(expand(&undodir))
       call mkdir(expand(&undodir), "p")
@@ -55,13 +68,28 @@
 
   "}}}
 
+  " Save buffer to file for each buffer action (next, rewind, last, first, etc.)
+  " All this are taking into account you are using the argument list
   set autowrite
+  " Max commands to remember in the history
   set history=1000
+  " Milliseconds to wait for a key sequence to complete
   set timeoutlen=300
+  " Always use the unnamed registry when performing operations like delete,
+  " yank, change etc. The unnamed registry can be used by external tools to
+  " copy/paste between the OS clipboard and Vim's registry
+  " - pbcopy, pbpaste (macOS)
+  " - xclip (if $DISPLAY is set)
+  " - tmux
+  " - g:clipboard
   set clipboard+=unnamed
+  " Detect when a file is being changed while a it's buffer is open and reload
+  " it if confirmed
   set autoread
-  set viewoptions=folds,options,cursor,unix,slash " For mkview
-  autocmd filetype crontab setlocal nobackup nowritebackup " So it works with crontab
+  " Stuff to save when creating a view with mkview
+  set viewoptions=folds,options,cursor,unix,slash
+  " So crontab works properly, disable backup and writebackup
+  autocmd filetype crontab setlocal nobackup nowritebackup
 " }}}
 
 " Visual {{{
@@ -69,24 +97,45 @@
   set number
   set relativenumber
   syntax on
+  " This might need editing for horrible project's file
   set synmaxcol=200
+  " Display non-visible characters like end of line, tabs, trailing spaces etc.
   set list
+  " Configure how the non-visible chars will look like
   set listchars=tab:▸\ ,trail:·,eol:¬,extends:»,precedes:«,nbsp:+
+  " Mark column for max char length reference
   set colorcolumn=81
+  " How filler chars will be displayed
   set fillchars=diff:⣿,vert:│
+  " How to show a line has been broken in two
   set showbreak=↪
+  " Highlight the current line
   set cursorline
+  " Wrap lines when they are too long
   set wrap
+  " Format to use when <C-a> and <C-x> are used
   set nrformats-=octal
+  " File encoding used for RPC communication
   set encoding=utf-8
+  " Search as I type
   set incsearch
+  " Show the keys typed when command is being performed
   set showcmd
+  " Show status line always (option 2)
   set laststatus=2
+  " Show which mode I'm currently in
   set showmode
+  " As it's name says, redraw lazily
   set lazyredraw
+  " Options for diff:
+  " - iwhite: Ignore changes of white space
+  " - vertical: Start diff mode in vertical splits unless other specified
   set diffopt+=iwhite,vertical
+  " Highlight last searched occurrence
   set hlsearch
+  " Ignore case when searching or a pattern
   set ignorecase
+  " If upper case used, then be case sensitive
   set smartcase
   set ruler " Line and column number of the cursor position
   set guioptions+=aceLlRrb " Need to add LlRrb to remove it
@@ -94,33 +143,33 @@
   " c: Console dialogs instead of popups
   " e: Show tabline
   set guioptions-=LlRrb
+  " Start scrolling 3 lines before reaching the screen edge
   set scrolloff=3
+  " Minimum chars off the screen to start scrolling (when wrap is off)
   set sidescroll=1
+  " Start scrolling vertically 6 char before reaching screen edge
   set sidescrolloff=6
+  " As the name suggests make fold-able since level 0
   set foldlevelstart=0
+  " Where to consider 'smart line break' when writing long lines
   set textwidth=80
-  if exists('veonim')
-    set guifont=DejaVuSansMono\ Nerd\ Font:h16
+  let $NVIM_TUI_ENABLE_TRUE_COLOR=1 " This is ignored if termguicolors is used
+
+  set showmatch   " Show matching parens when closing
+  set matchtime=10 " Show for this amount of tenth of a second
+
+  " tmux will only forward escape sequences to the terminal if surrounded by a DCS sequence
+  " http://sourceforge.net/mailarchive/forum.php?thread_name=AANLkTinkbdoZ8eNR1X2UobLTeww1jFrvfJxTMfKSq-L%2B%40mail.gmail.com&forum_name=tmux-users
+
+  if exists('$TMUX')
+    let &t_SI = "\<Esc>Ptmux;\<Esc>\<Esc>]50;CursorShape=1\x7\<Esc>\\"
+    let &t_EI = "\<Esc>Ptmux;\<Esc>\<Esc>]50;CursorShape=0\x7\<Esc>\\"
+  else
+    let &t_SI = "\<Esc>]50;CursorShape=1\x7"
+    let &t_EI = "\<Esc>]50;CursorShape=0\x7"
   endif
-  if !exists('veonim')
-    let $NVIM_TUI_ENABLE_TRUE_COLOR=1 " This is ignored if termguicolors is used
-
-    set showmatch   " Show matching parens when closing
-    set matchtime=6 " Show for this amount of tenth's of a second
-
-    " tmux will only forward escape sequences to the terminal if surrounded by a DCS sequence
-    " http://sourceforge.net/mailarchive/forum.php?thread_name=AANLkTinkbdoZ8eNR1X2UobLTeww1jFrvfJxTMfKSq-L%2B%40mail.gmail.com&forum_name=tmux-users
-
-    if exists('$TMUX')
-      let &t_SI = "\<Esc>Ptmux;\<Esc>\<Esc>]50;CursorShape=1\x7\<Esc>\\"
-      let &t_EI = "\<Esc>Ptmux;\<Esc>\<Esc>]50;CursorShape=0\x7\<Esc>\\"
-    else
-      let &t_SI = "\<Esc>]50;CursorShape=1\x7"
-      let &t_EI = "\<Esc>]50;CursorShape=0\x7"
-    endif
-    let &t_8f="\<Esc>[38;2;%lu;%lu;%lum"
-    let &t_8b="\<Esc>[38;2;%lu;%lu;%lum"
-  endif
+  let &t_8f="\<Esc>[38;2;%lu;%lu;%lum"
+  let &t_8b="\<Esc>[38;2;%lu;%lu;%lum"
 
   "
   " Formatting options:
@@ -146,21 +195,34 @@
 " Indentation {{{
   set autoindent " Copy indent in new line
   set smartindent " New indent level if needed
-  set expandtab
-  set softtabstop=2
-  set smarttab
-  set tabstop=2
+  set expandtab " Don't use tabs, expand to spaces
+  set softtabstop=2 " How many chars to show a 'tab' as
+  set smarttab " When deleting, figure out if it's a fake 'tab' and delete accordingly
+  set tabstop=2 " How many spaces to insert when using Tab
   set shiftwidth=2 " Width to indent for >> and << operators
+  " What to allow to 'backspace' delete
   set backspace=indent,eol,start
+  " Round indentation to fit expanded tabs
   set shiftround
 "}}}
 
 " Folds {{{
+  " Toggle folding in normal mode
   nnoremap <Space> za
+  " Toggle folding in visual mode
   vnoremap <Space> za
+
+  " Fold by indentation
+  set foldmethod=indent
+
+  " If file type is VIM
   augroup ft_vim
+    " Start autocommand
     au!
+    " If it's a vim file, set window fold method to marker ({{{ and }}} are used
+    " as markers to start and end the fold)
     au FileType vim setlocal foldmethod=marker
+    " If it's a help buffer window, text width should be 78 for easy reading
     au FileType help setlocal textwidth=78
   augroup END
 " }}}
@@ -185,18 +247,18 @@
 " Plugins {{{
   call plug#begin('~/.config/nvim/plugged')
 
-  Plug 'tpope/vim-fugitive'
-  Plug 'tpope/vim-repeat'
-  Plug 'tpope/vim-surround'
-  Plug 'tpope/vim-eunuch'
-  Plug 'tpope/vim-endwise'
-  Plug 'tpope/vim-commentary'
-  Plug 'tpope/vim-jdaddy', {'for': 'json'}
-  Plug 'tpope/vim-sleuth'   " Switch indent depending on ft
+  Plug 'tpope/vim-fugitive' " Git interaction Plugin
+  Plug 'tpope/vim-repeat'   " To use the '.' command on Plugins such as Surround
+  Plug 'tpope/vim-surround' " Surround stuff with specific chars or tags
+  Plug 'tpope/vim-endwise' " Help adding the correct 'closing' to a language construct
+  Plug 'tpope/vim-commentary' " Toggle comment on code depending on language
+  Plug 'tpope/vim-jdaddy', {'for': 'json'} " Provides json text object as j and
+  " adds gqaj to pretty print said object and gwaj to take the json object on the
+  " clipboard and extends it under the cursor
+  Plug 'tpope/vim-sleuth'   " Switch indent and tab sizes depending on ft
   " Ruby {{{
-    Plug 'tpope/vim-rvm'
     Plug 'vim-ruby/vim-ruby', {'for': 'ruby'} " Ruby text Objects, motions and indents
-    Plug 'vim-scripts/ruby-matchit', {'for': 'ruby'}  " Match the end word to close block
+    " Plug 'vim-scripts/ruby-matchit', {'for': 'ruby'}  " Match the end word to close block
   " }}}
   Plug 'andymass/vim-matchup' " Use % to match closing pair
   " Elixir {{{
@@ -212,42 +274,35 @@
     au FileType go set softtabstop=4
     au FileType go set tabstop=4
   " }}}
-  Plug 'andreshazard/vim-logreview' " Log reviewer
-  Plug 'junegunn/fzf', {'dir': '~/.fzf', 'do': './install --all'}
-  Plug 'junegunn/fzf.vim'
-  Plug 'pbogut/fzf-mru.vim'
-  Plug 'junegunn/vim-easy-align'
+  Plug 'andreshazard/vim-logreview' " Log reviewer, colors and format
+  Plug 'junegunn/fzf', {'dir': '~/.fzf', 'do': './install --all'} " fuzzy finder
+  Plug 'junegunn/fzf.vim' " Plugin to use fzf
+  Plug 'pbogut/fzf-mru.vim' " Use fzf to filter mru files
   Plug 'mhinz/vim-signify' " Show signs gutter with VCS info
-  Plug 'Raimondi/delimitMate' " Auto-close matching parens
+  Plug 'Raimondi/delimitMate' " Auto-close matching parens, not perfect
   Plug 'Yggdroot/indentLine'  " Show indentation line to guide
   Plug 'vim-scripts/AnsiEsc.vim' " Color ANSI escape chars
-  Plug 'mileszs/ack.vim' " Add command to use Ack instead of Grep
+  Plug 'mileszs/ack.vim' " Add command to use Ack instead of Grep and load window with options
   Plug 'sheerun/vim-polyglot' " Most programming languages support
-  Plug 'neoclide/coc.nvim', {'branch': 'release'}
-  Plug 'majutsushi/tagbar' " Generate a tag panel to check structure
-  Plug 'sff1019/vim-joker' " Colorscheme
+  Plug 'neoclide/coc.nvim', {'branch': 'release'} " LSP client for autocomplete and such
   Plug 'hashivim/vim-terraform' " Terraform syntax and command
 
   " Syntax highlight {{{
     Plug 'othree/yajs.vim' " Better Syntax highlight for JavaScript
+    Plug 'MaxMEllon/vim-jsx-pretty' " Help JSx syntax
     au FileType jproperties set synmaxcol=500
     Plug 'othree/html5.vim' " Better Syntax for Oceanic Theme
     Plug 'HerringtonDarkholme/yats.vim' " Better Syntax highlight for TypeScript
   " }}}
 
 " Colorschemes {{{
-  Plug 'vim-airline/vim-airline' " Powerline for vim
+  Plug 'vim-airline/vim-airline' " Powerline for Vim
   Plug 'vim-airline/vim-airline-themes'
   Plug 'morhetz/gruvbox' " Colorscheme
-  Plug 'ayu-theme/ayu-vim' " Nice dark Color
-  Plug 'mhartington/oceanic-next' " Nice Oceanic Color
+  Plug 'drewtempelmeyer/palenight.vim' " Colorscheme
   Plug 'joshdick/onedark.vim' " Inspired on Atom's colorscheme
-  Plug 'altercation/vim-colors-solarized' " This needs some config and linking
+  Plug 'rakr/vim-one'
 " }}}
-
-  " Documentation {{{
-    Plug 'rizzatti/dash.vim'
-  " }}}
 
   " NERDTree {{{
     Plug 'scrooloose/nerdtree', {'on':  'NERDTreeToggle'}
@@ -268,34 +323,42 @@
     vmap <Enter> <Plug>(EasyAlign)
   " }}}
   " Autocomplete options {{{
-    set complete=.,w,b,u,t
+  " Set when auto-completing is triggered:
+  " - . => Scan current buffer
+  " - w => Scan buffers in other windows
+  " - b => Scan all buffers on the list
+  " - u => Scan buffers that have been unloaded from the buffers list
+  " - t => Tag completion
+  " - i => Scan current and included files, if includes polute your list, remove
+  "   it
+    set complete=.,w,b,u,t,i
+    " Options for insert mode completion:
+    " - longest => Only insert the longest common text of matches
+    " - menuone => Use popup menu also when there is only one match
+    " - preview => Show extra information about the current completion
     set completeopt=longest,menuone,preview
+    " Ignore this matches on lookup for completion
     set wildignore+=*.DS_Store
     set wildignore+=*/_build**
     set wildignore+=*/.ssh
     set wildignore+=*cache/**
-    " let g:deoplete#enable_at_startup = 1
+    set wildignore+=*log/*
   " }}}
-  if !exists('veonim')
-    " Colorscheme {{{
-      set termguicolors
-      set t_Co=256
-      set t_AB=^[[48;5;%dm
-      set t_AF=^[[38;5;%dm
-      " Needs base16 on iterm: https://github.com/chriskempson/base16-iterm2
-      "let ayucolor="mirage"
-      "colorscheme ayu
-      "colorscheme OceanicNext
-      if !exists('veonim')
-        let g:gruvbox_italic=1
-        colorscheme onedark
-      endif
-      set background=dark
+  " Colorscheme {{{
+    set termguicolors
+    set t_Co=256
+    set t_AB=^[[48;5;%dm
+    set t_AF=^[[38;5;%dm
+    " Needs base16 on iterm: https://github.com/chriskempson/base16-iterm2
+    colorscheme one
+    let g:gruvbox_italic=1 " for use with gruvbox"
+    set background=dark
 
-      hi clear SpellBad
-      hi SpellBad cterm=underline
-    " }}}
-  endif
+    " Clear bad spelling style
+    " hi clear SpellBad
+    " Show bad spelled words with underline
+    hi SpellBad cterm=underline
+  " }}}
 
   " IndentLine {{{
     let g:indent_guides_start_level=2
@@ -305,6 +368,7 @@
 
   " Nerdtree Config {{{
     nnoremap <leader>t :NERDTreeToggle<CR>
+    " Don't show list chars when on NERDTree
     autocmd FileType nerdtree setlocal nolist
     let g:NERDTreeWinSize = 50
     let g:NERDTreeQuitOnOpen = 1
@@ -340,39 +404,25 @@
     endif
   "}}}"
 
-  if !exists('veonim')
   " Airline {{{
     if !exists('g:airline_symbols')
       let g:airline_symbols = {}
       let g:airline_powerline_fonts = 1
     endif
-    " let g:airline_left_sep         = '⮀'
-    " let g:airline_left_alt_sep     = '⮁'
-    " let g:airline_right_sep        = '⮂'
-    " let g:airline_right_alt_sep    = '⮃'
-    " let g:airline_symbols.branch   = '⭠'
-    " let g:airline_symbols.readonly = '⭤'
-    " let g:airline_symbols.linenr   = '⭡'
     let g:airline_detect_spell     = 0 " Don't display spell
     let g:airline#extensions#hunks#enabled = 0 " Don't display the hunks info
     let g:airline_theme='lucius' " I like this theme better
   " }}}
-  endif
   " FZF {{{
-    if !exists('veonim')
-      nmap <leader>f :Files<CR>
-      nmap <leader>b :Buffers<CR>
-    else
-      nmap <leader>f :Veonim files<CR>
-      nmap <leader>b :Veonim buffers<CR>
-    endif
+    nmap <leader>f :Files<CR>
+    nmap <leader>b :Buffers<CR>
   "}}}
   if has("unix")
   " Ctags {{{
     let s:uname = system("uname -s")
     if match(s:uname, "arwin") && !exists("Ctags")
       " Exhuberant Ctags must be installed using brew
-      command! Ctags execute  "!`brew --prefix`/bin/ctags -R --exclude=@/Users/brianmartinez/.ctagsignore ."
+      command! Ctags execute  "!`brew --prefix`/bin/ctags -R --exclude=@/Users/bmartinez/.ctagsignore ."
     endif
   " }}}
   endif
@@ -386,39 +436,25 @@
     let g:elixir_maxpreviews = 5
   " }}}
 
-  " Ack configs {{{
-    if !exists('veonim')
-      let g:ackprg = 'rg --vimgrep --smart-case'
-    endif
+  " Python {{{
+    autocmd FileType python let b:coc_root_patterns = ['requirements.txt']
   " }}}
-
-  " Tagbar {{{
-    nmap <leader>g :TagbarToggle<CR>
-    let g:tagbar_type_typescript = {
-          \ 'ctagstype': 'typescript',
-          \ 'kinds': [
-          \ 'c:classes',
-          \ 'n:modules',
-          \ 'f:functions',
-          \ 'v:variables',
-          \ 'v:varlambdas',
-          \ 'm:members',
-          \ 'i:interfaces',
-          \ 'e:enums',
-          \ ]
-          \ }
+  " Ack configs {{{
+    let g:ackprg = 'rg --vimgrep --smart-case'
   " }}}
 
   " Coc {{{
     command! -nargs=0 Prettier :call CocAction('runCommand', 'prettier.formatFile')
+    " Use `[g` and `]g` to navigate diagnostics
+    " Use `:CocDiagnostics` to get all diagnostics of current buffer in location list.
+    nmap <silent> [g <Plug>(coc-diagnostic-prev)
+
+    " GoTo code navigation.
+    nmap <silent> gd <Plug>(coc-definition)
+    nmap <silent> gy <Plug>(coc-type-definition)
+    nmap <silent> gi <Plug>(coc-implementation)
+    nmap <silent> gr <Plug>(coc-references)   nmap <silent> ]g <Plug>(coc-diagnostic-next)
   " }}}
 " }}}"
 
-" Project Configurations {{{
-  " Angular 2 {{{
-    if filereadable('ng-package.json')
-      " For the use with angular custom tags
-      let g:ale_html_tidy_options='--custom-tags blocklevel'
-    endif
-  " }}}
-" }}}
+endif

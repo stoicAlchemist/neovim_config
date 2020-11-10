@@ -10,3 +10,12 @@
 [submodule "plugged/vim-terraform"]
 	path = plugged/vim-terraform
 	url = https://github.com/hashivim/vim-terraform.git
+[submodule "plugged/vim-one"]
+	path = plugged/vim-one
+	url = https://github.com/rakr/vim-one.git
+[submodule "plugged/vim-jsx-pretty"]
+	path = plugged/vim-jsx-pretty
+	url = https://github.com/MaxMEllon/vim-jsx-pretty.git
+[submodule "plugged/palenight.vim"]
+	path = plugged/palenight.vim
+	url = https://github.com/drewtempelmeyer/palenight.vim.git
