@@ -19,3 +19,12 @@
 [submodule "plugged/palenight.vim"]
 	path = plugged/palenight.vim
 	url = https://github.com/drewtempelmeyer/palenight.vim.git
+[submodule "plugged/pleasant.vim"]
+	path = plugged/pleasant.vim
+	url = https://github.com/RohanPoojary/pleasant.vim.git
+[submodule "plugged/vim-rails"]
+	path = plugged/vim-rails
+	url = https://github.com/tpope/vim-rails.git
+[submodule "plugged/vim"]
+	path = plugged/vim
+	url = https://github.com/embark-theme/vim.git

@@ -8,6 +8,7 @@
   "diagnostic.infoSign": "•",
   "coc.preferences.formatOnSaveFiletypes": ["css", "Markdown", "javascript", "typescript"],
   "prettier.eslintIntegration": true,
+  "eslint.nodePath": "/usr/local/bin",
   "languageserver": {
     "golang": {
       "command": "gopls",

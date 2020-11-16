@@ -8,7 +8,6 @@
 " empty arguments, it resets to 'do not convert'
 scriptencoding 'utf-8'
 
-if !exists('g:vscode')
 " Prelude {{{
   " When this init.vim file is saved, reload configs. This might cause colors
   " glitches or issues with plugins like Airbrake.
@@ -168,8 +167,6 @@ if !exists('g:vscode')
     let &t_SI = "\<Esc>]50;CursorShape=1\x7"
     let &t_EI = "\<Esc>]50;CursorShape=0\x7"
   endif
-  let &t_8f="\<Esc>[38;2;%lu;%lu;%lum"
-  let &t_8b="\<Esc>[38;2;%lu;%lu;%lum"
 
   "
   " Formatting options:
@@ -257,6 +254,7 @@ if !exists('g:vscode')
   " clipboard and extends it under the cursor
   Plug 'tpope/vim-sleuth'   " Switch indent and tab sizes depending on ft
   " Ruby {{{
+    Plug 'tpope/vim-rails'
     Plug 'vim-ruby/vim-ruby', {'for': 'ruby'} " Ruby text Objects, motions and indents
     " Plug 'vim-scripts/ruby-matchit', {'for': 'ruby'}  " Match the end word to close block
   " }}}
@@ -302,6 +300,7 @@ if !exists('g:vscode')
   Plug 'drewtempelmeyer/palenight.vim' " Colorscheme
   Plug 'joshdick/onedark.vim' " Inspired on Atom's colorscheme
   Plug 'rakr/vim-one'
+  Plug 'embark-theme/vim'
 " }}}
 
   " NERDTree {{{
@@ -349,9 +348,15 @@ if !exists('g:vscode')
     set t_Co=256
     set t_AB=^[[48;5;%dm
     set t_AF=^[[38;5;%dm
+    let &t_8f="\<Esc>[38;2;%lu;%lu;%lum"
+    let &t_8b="\<Esc>[48;2;%lu;%lu;%lum"
+
     " Needs base16 on iterm: https://github.com/chriskempson/base16-iterm2
+    " colorscheme pleasant
     colorscheme one
-    let g:gruvbox_italic=1 " for use with gruvbox"
+    let g:pleasant_italic=1
+    let g:gruvbox_italic=1
+    let g:embark_terminal_italics=1
     set background=dark
 
     " Clear bad spelling style
@@ -411,7 +416,7 @@ if !exists('g:vscode')
     endif
     let g:airline_detect_spell     = 0 " Don't display spell
     let g:airline#extensions#hunks#enabled = 0 " Don't display the hunks info
-    let g:airline_theme='lucius' " I like this theme better
+    " let g:airline_theme = 'one'
   " }}}
   " FZF {{{
     nmap <leader>f :Files<CR>
@@ -422,7 +427,7 @@ if !exists('g:vscode')
     let s:uname = system("uname -s")
     if match(s:uname, "arwin") && !exists("Ctags")
       " Exhuberant Ctags must be installed using brew
-      command! Ctags execute  "!`brew --prefix`/bin/ctags -R --exclude=@/Users/bmartinez/.ctagsignore ."
+      command! Ctags execute  "silent !`brew --prefix`/bin/ctags -R --exclude=@/Users/bmartinez/.ctagsignore ."
     endif
   " }}}
   endif
@@ -444,17 +449,29 @@ if !exists('g:vscode')
   " }}}
 
   " Coc {{{
+  " CoC searches for yarn installed node/javascript libraries, the config may
+  " need to change for each computer
     command! -nargs=0 Prettier :call CocAction('runCommand', 'prettier.formatFile')
     " Use `[g` and `]g` to navigate diagnostics
     " Use `:CocDiagnostics` to get all diagnostics of current buffer in location list.
     nmap <silent> [g <Plug>(coc-diagnostic-prev)
+    nmap <silent> ]g <Plug>(coc-diagnostic-next)
 
     " GoTo code navigation.
-    nmap <silent> gd <Plug>(coc-definition)
+    " nmap <silent> gd <Plug>(coc-definition)
     nmap <silent> gy <Plug>(coc-type-definition)
     nmap <silent> gi <Plug>(coc-implementation)
-    nmap <silent> gr <Plug>(coc-references)   nmap <silent> ]g <Plug>(coc-diagnostic-next)
+    nmap <silent> gr <Plug>(coc-references)
+
+    xmap if <Plug>(coc-funcobj-i)
+    omap if <Plug>(coc-funcobj-i)
+    xmap af <Plug>(coc-funcobj-a)
+    omap af <Plug>(coc-funcobj-a)
+    xmap ic <Plug>(coc-classobj-i)
+    omap ic <Plug>(coc-classobj-i)
+    xmap ac <Plug>(coc-classobj-a)
+    omap ac <Plug>(coc-classobj-a)
+
+    autocmd User CocJumpPlaceholder call CocActionAsync('showSignatureHelp')
   " }}}
 " }}}"
-
-endif
